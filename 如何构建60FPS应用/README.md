@@ -1,5 +1,7 @@
 # 如何构建 60FPS 应用
 
+[原文链接](https://github.com/Godiswill/blog/issues/5)
+
 ### 渲染生命周期
 
 - 渲染管道流
@@ -57,9 +59,17 @@
 
 [Layout Scope案例](http://udacity.github.io/60fps/lesson1/layoutPaint/index.html)
 
-- 一般情况下影响的范围一样大，都是整个文档。特殊情况下可以提升[布局边界](https://github.com/Godiswill/blog/issues/4)。
+1. 用 `Chrome` 打开上面网址，`F12` 或 `command+option+i` 调出开发工具
+2. 点击 `Performance`，如果需要分析加载过程的性能，点击左角 `Start profiling and reload page`；如果需要分析加载后的交互性能，点击 `Record` ，接着进行交互，然后 stop。
+
+- `Layout root #document` 表示影响整个文档
+- `Nodes That Need Layout 3 of 5` 表示实际需要重新布局的节点个数
 
 ![layout-boundaries](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/layout-boundaries.png)
+
+一般情况下影响的范围一样大，都是整个文档。特殊情况下可以提升[布局边界](https://github.com/Godiswill/blog/issues/4)，改变布局影响的范围。
+
+![boundary](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/boundary.png)
 
 思考：通常修改样式，都会影响哪些渲染管道流程。
 
@@ -84,6 +94,10 @@
 2. Animation：人的眼睛都有追踪运动轨迹的能力，对于持续的动画，每秒60帧(即 `60FPS`)用户会觉得画面流畅，低于此用户能够感知到动画的卡顿。也就是说每一帧的构建只有 `16ms` 的时间，除去浏览器自身调用开销，能留给JS执行、Layout、Paint的时间，大概只有 `10ms`。
 3. Idle：在网页资源加载完毕或让用户感知到响应时，有 `50ms` 的空闲时间，开发者可以利用这 50ms 来执行一些不重要的或为用户下一步交互提前准备的任务。为了及时响应用户的交互，每个事件循环执行的任务时长不能超过 `50ms`，通常称超过 50ms 的任务为`长任务`。
 4. Load：从网页请求到下载解析显示重要内容且和交互的时间应在 `1s` 内，即关键路径渲染流程应该不超过 `1s`。
+
+长任务警告
+
+![long-task](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/long-task.png)
 
 思考：一个新闻型网站，在加载之后的空闲时间里，应该执行哪些操作？
 加载：
@@ -150,6 +164,10 @@ requestAnimationFrame 与 setTimeout、setInterval
 
 ![requestidlecallback](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/requestidlecallback.jpg)
 
+#### Web Work
+
+- 对于一些非常复杂耗时的计算，可以考虑使用 `Web Work` ，文末给出了参考链接。
+
 算法的魅力：[比较冒泡排序与内置排序](http://jsbin.com/feloni/3/quiet)
 
 
@@ -209,9 +227,11 @@ CSS 样式开销不容忽视，好的命名方式，适当的复杂度都有利�
       box-shadow: 0 1px 1px rgba(0,0,0,0.3);
       margin: 5px;
       position: relative;
-      will-change: transform; /* 提升了层级 */
+      will-change: transform; /* 提升了层级，导致层级爆炸 */
     }
 ```
+
+![too-much-layers](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/too-much-layers.png)
 
 #### 强制布局 FSL (Forced Synchronous Layout) / 强制重排(Force Reflow)，以下哪些会造成 FSL
 
@@ -259,11 +279,22 @@ CSS 样式开销不容忽视，好的命名方式，适当的复杂度都有利�
 - 手动提升图层，应该权衡新增图层减少绘制和新增图层增加管理开销
 
 如何查看图层渲染
+
+- console -> esc -> Rendering -> 勾选 Paint flashing，滑动页面发现大量绿色块，表明有大块渲染。
+
+[未优化](https://www.html5rocks.com/static/demos/parallax/demo-1a/demo.html)
+
+[优化后](https://www.html5rocks.com/static/demos/parallax/demo-2/demo.html)
+
+
 - console -> esc -> Rendering -> Layer borders
 - 浅蓝色线条表示每个图层拆分成的图块，开发者是没办法控制的，这是浏览器拆分图层的方式。
 - 橘色线条表示在这些元素位于自己的合成图层之上，是开发者告诉浏览器的。
 
 提升图层的方式
+
+[分析网址](https://udacity.github.io/60fps/lesson6/willChange/index.html)
+
 ```CSS
 .create-new-layer {
     /* 暗示浏览器开发者会在某个时间点更改元素 transform 属性，浏览器可能会创建新图层。这样的好处是可能浏览器认为此事创建图层开销很高，不一定会创建 */
@@ -279,6 +310,8 @@ CSS 样式开销不容忽视，好的命名方式，适当的复杂度都有利�
 - 更新图层和和合成图层最好不要超过 2ms。
 
 如何查看有哪些图层和产生原因
+
+[分析网址](http://output.jsbin.com/ruhahu/1/quiet)
 
 ![layer](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/layer.png)
 
@@ -297,6 +330,7 @@ CSS 样式开销不容忽视，好的命名方式，适当的复杂度都有利�
 4. [使用 Chrome DevTools 中的 Device Mode 模拟移动设备](https://developers.google.com/web/tools/chrome-devtools/device-mode/?utm_source=dcc&utm_medium=redirect&utm_campaign=2016q3)
 5. [视频网站](https://classroom.udacity.com/courses/ud860)
 6. [使用 RAIL 模型评估性能](https://developers.google.com/web/fundamentals/performance/rail)
+7. [坚持仅合成器的属性和管理层计数](https://developers.google.com/web/fundamentals/performance/rendering/stick-to-compositor-only-properties-and-manage-layer-count)
 
 
 web work 练习：

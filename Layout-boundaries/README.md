@@ -18,7 +18,7 @@
 or:
 
 - `display` 不能为 `inline` 或 `inline-block` 
-- `height` 不能为百分比
+- `width`、`height` 不能为百分比
 - `height` 不能隐式 或 `auto`
 - `width` 不能隐式 或 `auto`
 - `overflow` 明确为 `scroll` 或 `auto` 或 `hidden`

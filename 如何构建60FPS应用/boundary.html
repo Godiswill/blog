@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Layout Scope</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      background: red;
+    }
+
+    #d1 {
+      background: green;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    #d2 {
+      background: blue;
+      height: 200px;
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="d1">
+    <div id="d2">
+    </div>
+  </div>
+  <script>
+    var c = 0;
+    
+    document.addEventListener('click', function() {
+
+      if (c === 0)
+        document.body.style.width = '50%';
+      else if (c === 1)
+        document.querySelector('#d1').style.width = '200px';
+      else if (c === 2)
+        document.querySelector('#d2').style.width = '50%';
+      
+      c++;
+      c%=3;
+      
+    })
+  </script>
+</body>
+</html>
