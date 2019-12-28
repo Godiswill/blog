@@ -41,7 +41,7 @@
 
 ```javascript
 try {
-  const error = 'error'；   // 大写分号
+  const error = 'error'；   // 圆角分号
 } catch(e) {
   console.log('我感知不到错误');
 }
@@ -151,7 +151,9 @@ new Promise((resolve) => {
 ```
 
 同样你可以利用 `window.onunhandledrejection` 或 `window.addEventListener("unhandledrejection")`来监控错误。
+接收一个PromiseError对象，可以解析错误对象中的 `reason` 属性，有点类似 `stack`。
 
+具体兼容处理在 TraceKit.js 可以看到。
 
 #### 上报方式
 1. `img` 上报
@@ -198,9 +200,9 @@ function report(errInfo) {
 - 错误信息（error message）
 - 追溯栈(stack trace)
 
-![windowOnerror](https://raw.githubusercontent.com/Godiswill/blog/master/错误监控/error.jpg)
+![error](https://raw.githubusercontent.com/Godiswill/blog/master/错误监控/error.jpg)
 
-![windowOnerror](https://raw.githubusercontent.com/Godiswill/blog/master/错误监控/consoleError.jpg)
+![consoleError](https://raw.githubusercontent.com/Godiswill/blog/master/错误监控/consoleError.jpg)
 
 开发者可以通过不同方式来抛出一个JavaScript 错误：
 
@@ -209,7 +211,7 @@ function report(errInfo) {
 - throw 'Problem description.' <-- bad
 - throw null <-- even worse
 
-推荐使用第二种，第二三种浏览器无法就以上两种方式生成追溯栈。
+推荐使用第二种，第三四种浏览器无法就以上两种方式生成追溯栈。
 
 如果能解析每行追溯栈中的错误信息，行列在配合 `SourceMap` 不就能定位到每行具体源代码了吗。
 问题在于不同浏览器在以上信息给出中，并没有一个通用标准的格式。难点就在于解决兼容性问题。
@@ -225,7 +227,7 @@ function report(errInfo) {
 2. `try catch` 增强，抛出的错误信息较全，可以弥补 `window.onerror` 的不足。但就像先前说过的，
 `try catch` 无法捕获异步错误和`promise`错误，也不利用 `V8` 引擎性能优化。
 
-例如腾讯的`BadJS`，对以下推荐进行了`try catch`包裹
+例如腾讯的 [BadJS](https://github.com/BetterJS/badjs-report)，对以下推荐进行了`try catch`包裹
 
 - setTimeout 和 setInterval 
 - 事件绑定 
@@ -233,6 +235,106 @@ function report(errInfo) {
 - define 和 require
 - 业务主入口
 
-对于Promise可以解析错误对象中的 `reason` 信息。
+具体是否需要做到如此细粒度的包裹，还是视情况而定。
 
-未完待续...
+#### SourceMap
+
+例如有以下错误追溯栈(stack trace)
+
+```
+ReferenceError: thisIsAbug is not defined
+    at Object.makeError (http://localhost:7001/public/js/traceKit.min.js:1:9435)
+    at http://localhost:7001/public/demo.html:28:12
+```
+
+能够解析成一下格式
+
+```json
+[
+	{
+	  "args" : [],
+	  "url" : "http://localhost:7001/public/js/traceKit.min.js",
+	  "func" : "Object.makeError",
+	  "line" : 1,
+	  "column" : 9435,
+	  "context" : null
+	}, 
+	{
+	  "args" : [],
+	  "url" : "http://localhost:7001/public/demo.html",
+	  "func" : "?",
+	  "line" : 28,
+	  "column" : 12,
+	  "context" : null
+	}
+]
+```
+
+在有了行列和对应的 `SourceMap` 文件就能解析获取源代码信息了。
+
+![sourceMapDel](https://raw.githubusercontent.com/Godiswill/blog/master/错误监控/sourceDeal.jpg)
+
+解析结果
+
+![sourceMapDel](https://raw.githubusercontent.com/Godiswill/blog/master/错误监控/sourceMap.jpg)
+
+处理代码如下：
+
+```javascript
+import { SourceMapConsumer } from 'source-map';
+
+// 必须初始化
+SourceMapConsumer.initialize({
+  'lib/mappings.wasm': 'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
+});
+
+/**
+ * 根据sourceMap文件解析源代码
+ * @param {String} rawSourceMap sourceMap文件
+ * @param {Number} line 压缩代码报错行
+ * @param {Number} column 压缩代码报错列
+ * @param {Number} offset 设置返回临近行数
+ * @returns {Promise<{context: string, originLine: number | null, source: string | null}>}
+ * context：源码错误行和上下附近的 offset 行，originLine：源码报错行，source：源码文件名
+ */
+export const sourceMapDeal = async (rawSourceMap, line, column, offset) => {
+  // 通过sourceMap库转换为sourceMapConsumer对象
+  const consumer = await new SourceMapConsumer(rawSourceMap);
+  // 传入要查找的行列数，查找到压缩前的源文件及行列数
+  const sm = consumer.originalPositionFor({
+    line, // 压缩后的行数
+    column, // 压缩后的列数
+  });
+  // 压缩前的所有源文件列表
+  const { sources } = consumer;
+  // 根据查到的source，到源文件列表中查找索引位置
+  const smIndex = sources.indexOf(sm.source);
+  // 到源码列表中查到源代码
+  const smContent = consumer.sourcesContent[smIndex];
+  // 将源代码串按"行结束标记"拆分为数组形式
+  const rawLines = smContent.split(/\r?\n/g);
+  let begin = sm.line - offset;
+  const end = sm.line + offset;
+  begin = begin <= 0 ? 1 : begin;
+  // 输出源码行，因为数组索引从0开始，故行数需要-1
+  const context = rawLines.slice(begin - 1, end).join('\n');
+  // 记得销毁
+  consumer.destroy();
+  return {
+    context,
+    originLine: sm.line,
+    source: sm.source,
+  }
+};
+```
+
+大家根据 `SourceMap` 文件的格式，就能很好的理解这段代码了。
+
+目前监控系统正在一点点开发当中，做的好用的话，会开源出来。。。
+
+### 参考网站
+1. [mozilla/source-map](https://github.com/mozilla/source-map)
+1. [前端代码异常监控实战](https://github.com/happylindz/blog/issues/5)
+1. [前端异常监控 - BadJS](https://slides.com/loskael/badjs/fullscreen#/)
+1. [脚本错误量极致优化-让脚本错误一目了然](https://github.com/joeyguo/blog/issues/14)
+
