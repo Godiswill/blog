@@ -2,14 +2,9 @@
 
 ## JS 基础
 
-- [JS面向对象](https://github.com/Godiswill/blog/issues/8)
-	1. 封装、继承、多态；
-
-- [实现继承的几种方式](https://github.com/Godiswill/blog/issues/8)
-	1. 原型继承、构造函数继承、组合继承、寄生组合继承、类式继承；
-	1. `extends`， `mixin`，`babel` 对 `class` 的实现；
-	
-- JS 的 `prototype`、`__proto__`
+- [JS面向对象](https://github.com/Godiswill/blog/issues/8)（封装、继承、多态）
+- [实现继承的几种方式](https://github.com/Godiswill/blog/issues/8)（原型、构造函数、组合、寄生组合、类式、拷贝继承）
+- [一图理解原型链](https://github.com/Godiswill/blog/issues/8)（实例对象是如何与自己的构造函数、`Function`、`Object` 串联起来的）
 - 常用设计模式
 - 常考查算法
 - [es6/7/8/10](https://es6.ruanyifeng.com/)
@@ -17,7 +12,7 @@
 
 ## CSS 基础
 
-- `BFC`
+- 块级格式化上下文`BFC`
 - 动画`Animation`，过渡`transition`
 - 常用布局
 - 移动适配
