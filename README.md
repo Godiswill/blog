@@ -3,20 +3,19 @@
 ## JS 基础
 
 - [JS面向对象](https://github.com/Godiswill/blog/issues/8)（封装、继承、多态）
-- [实现继承的几种方式](https://github.com/Godiswill/blog/issues/8)（原型、构造函数、组合、寄生组合、类式、拷贝继承）
-- [一图理解原型链](https://github.com/Godiswill/blog/issues/8)（实例对象是如何与自己的构造函数、`Function`、`Object` 串联起来的）
+- [实现继承的几种方式](https://github.com/Godiswill/blog/issues/9)（原型、构造函数、组合、寄生组合、类式、拷贝继承）
+- [一图理解原型链](https://github.com/Godiswill/blog/issues/10)（实例对象是如何与自己的构造函数、`Function`、`Object` 串联起来的）
 - 常用设计模式
 - 常考查算法
-- [es6/7/8/10](https://es6.ruanyifeng.com/)
+- [《ECMAScript 6 入门教程》](https://es6.ruanyifeng.com/)
 - JS事件循环
 
 ## CSS 基础
 
-- 块级格式化上下文`BFC`
+- [块级格式化上下文`BFC`](https://github.com/Godiswill/blog/issues/11)
 - 动画`Animation`，过渡`transition`
 - 常用布局
 - 移动适配
-	1. rem
 
 ## 前端框架原理
 
@@ -34,6 +33,12 @@
 	1. http 缓存——304与CDN；
 	1. 浏览器渲染机制——预获取，CSS、JS顺序的重要性，@import的损耗，重排、重绘，GPU加速等。
 - 图片优化雪碧图、webp、svg。
+
+- [性能优化——关键路径渲染优化](https://github.com/Godiswill/blog/issues/1)
+- [HTTP 缓存](https://github.com/Godiswill/blog/issues/2)
+- [什么导致强制布局/重排](https://github.com/Godiswill/blog/issues/3)
+- [布局边界 Layout Boundaries](https://github.com/Godiswill/blog/issues/4)（微优化）
+- [如何构建 60FPS 应用](https://github.com/Godiswill/blog/issues/5)
 
 ## JS服务端
 
@@ -62,8 +67,9 @@
 - 私有npm
 - docker hub
 
-### webpack
+### 打包工具 webpack、rollup
 
+- [rollup 打包实践](https://github.com/Godiswill/blog/issues/6)
 - webpack loader/plugin 等实现细节；
 
 ### 前端发布系统
@@ -73,7 +79,7 @@
 
 ### 前端错误监控系统
 
-- 脚本错误、资源加载错误、api自定义错误
+- [错误监控原理分析](https://github.com/Godiswill/blog/issues/7)
 
 ### 前端性能监控系统
 
