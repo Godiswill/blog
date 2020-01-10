@@ -33,7 +33,6 @@
 	1. http 缓存——304与CDN；
 	1. 浏览器渲染机制——预获取，CSS、JS顺序的重要性，@import的损耗，重排、重绘，GPU加速等。
 - 图片优化雪碧图、webp、svg。
-
 - [性能优化——关键路径渲染优化](https://github.com/Godiswill/blog/issues/1)
 - [HTTP 缓存](https://github.com/Godiswill/blog/issues/2)
 - [什么导致强制布局/重排](https://github.com/Godiswill/blog/issues/3)
