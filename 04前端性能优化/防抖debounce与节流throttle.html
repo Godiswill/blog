@@ -146,7 +146,7 @@
     let timer, lastTime;
     return function() {
       const now = new Date().getTime();
-      if( lastTime && lastTime + delay > now ) {
+      if( lastTime && now - lastTime < delay ) {
         timer && clearTimeout(timer);
         timer = setTimeout(() => {
           lastTime = now;

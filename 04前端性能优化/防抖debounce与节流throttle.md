@@ -3,7 +3,7 @@
 
 ## 前言
 
-一般对于监听某些密集型键盘、鼠标、手势事件需要和后端请求交互的，防抖、节流就很有必要了。
+一般对于监听某些密集型键盘、鼠标、手势事件需要和后端请求交互、修改 `dom` 的，防抖、节流就很有必要了。
 
 ## 防抖
 
@@ -89,7 +89,7 @@ function throttle(fn, delay) {
   let timer, lastTime;
   return function() {
     const now = new Date().getTime();
-    if( lastTime && lastTime + delay > now ) {
+    if( lastTime && now - lastTime < delay ) {
       timer && clearTimeout(timer);
       timer = setTimeout(() => fn.apply(this, arguments), delay);
       return;
