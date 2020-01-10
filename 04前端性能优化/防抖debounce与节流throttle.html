@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>防抖debounce 与 节流throttle</title>
+</head>
+<body style="padding: 100px 20% 0 0; text-align: right">
+<div>原生态：<input id="noAction" /></div>
+<br />
+<div>防抖100ms：<input id="debounce" /></div>
+<br />
+
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">滑动节流100ms测试</div>
+<div style="height: 100px">到底</div>
+<script>
+  let last = new Date().getTime();
+  //模拟一段ajax请求
+  function ajax(content) {
+    const d = new Date().getTime();
+    const span = d - last;
+    console.log(`${content} 间隔 ${span}ms`);
+    last = d;
+  }
+
+  const noActionInput = document.getElementById('noAction');
+
+  noActionInput.addEventListener('keyup', function(e) {
+    ajax(e.target.value);
+  });
+
+  /**
+   * 一般利用闭包存储和私有化定时器 `timer`
+   * 在 `delay` 时间内再次调用则清除未执行的定时器
+   * 重新定时器
+   * @param fn
+   * @param delay
+   * @returns {Function}
+   */
+  function debounce(fn, delay) {
+    let timer = null;
+    return function() {
+      timer && clearTimeout(timer);
+      timer = setTimeout(() => fn.apply(this, arguments), delay);
+    };
+  }
+
+  const debounceInput = document.getElementById('debounce');
+
+  const debounceAjax = debounce(ajax, 100);
+
+  debounceInput.addEventListener('keyup', function(e) {
+    debounceAjax(e.target.value);
+  });
+
+  /**
+   * 利用闭包保存定时器 `timer`，上次执行时间戳
+   * 若距离上次执行时间未超过 `delay` 则重置定时器
+   * 否则立即执行
+   * @param fn
+   * @param delay
+   * @returns {Function}
+   */
+  function throttle(fn, delay) {
+    let timer, lastTime;
+    return function() {
+      const now = new Date().getTime();
+      if( lastTime && lastTime + delay > now ) {
+        timer && clearTimeout(timer);
+        timer = setTimeout(() => {
+          lastTime = now;
+          fn.apply(this, arguments);
+        }, delay);
+        return;
+      }
+      lastTime = now;
+      fn.apply(this, arguments);
+    };
+  }
+  const throttleAjax = throttle(ajax, 100);
+
+  window.addEventListener('scroll', function() {
+    const top = document.body.scrollTop || document.documentElement.scrollTop;
+    throttleAjax('scrollTop: ' + top);
+    // ajax('scrollTop: ' + top);
+  });
+</script>
+</body>
+</html>
