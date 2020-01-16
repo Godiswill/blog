@@ -12,10 +12,10 @@
 
 ## 02. CSS 基础
 
-- [块级格式化上下文`BFC`](https://github.com/Godiswill/blog/issues/11)
+- [BFC块级格式化上下文](https://github.com/Godiswill/blog/issues/11)
 - 动画`Animation`，过渡`transition`
 - 常用布局
-- 移动适配
+- 移动适配 [amfe-flexible 分析](https://github.com/Godiswill/blog/issues/13)
 
 ## 03. 前端框架原理
 
@@ -26,7 +26,7 @@
 
 ## 04. 前端性能优化
 
-- [防抖`debounce` 与 节流`throttle`](https://github.com/Godiswill/blog/issues/12)
+- [防抖debounce与节流throttle](https://github.com/Godiswill/blog/issues/12)
 - 浏览器输入url到页面的展现，具体发生了些什么，前端能做哪些优化
 	1. DNS 递归查询解析——DNS优化prefetch；
 	1. TCP 三次握手、四次挥手与http1.0/1.1/2.0 的区别，http/s的区别；
@@ -38,6 +38,7 @@
 - [什么导致强制布局/重排](https://github.com/Godiswill/blog/issues/3)
 - [布局边界 Layout Boundaries](https://github.com/Godiswill/blog/issues/4)（微优化）
 - [如何构建 60FPS 应用](https://github.com/Godiswill/blog/issues/5)
+- [一帧剖析](https://github.com/Godiswill/blog/issues/14)
 
 ## 05. JS服务端
 
@@ -74,7 +75,7 @@
 ### 发布系统
 
 - Jenkins
-- git-to-CDN
+- git hook to CDN
 
 ### 错误监控系统
 
@@ -86,4 +87,8 @@
 
 ### 前端工程部署
 
-- docker/k8s 简化部署
+- pm2
+- docker + ftp
+- docker hub
+- docker compose + git
+- k8s

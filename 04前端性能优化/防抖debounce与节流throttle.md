@@ -15,9 +15,13 @@
 而中间态的值，并不关心，为了减轻服务器压力，避免服务器资源浪费，这时就需要防抖了。
 
 ```javascript
-//模拟一段ajax请求
+let last = new Date().getTime();
+  //模拟一段ajax请求
 function ajax(content) {
-  console.log('ajax request ' + content);
+  const d = new Date().getTime();
+  const span = d - last;
+  console.log(`${content} 间隔 ${span}ms`);
+  last = d;
 }
 
 const noActionInput = document.getElementById('noAction');
