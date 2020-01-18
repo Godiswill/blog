@@ -314,15 +314,14 @@ export const sourceMapDeal = async (rawSourceMap, line, column, offset) => {
   // 将源代码串按"行结束标记"拆分为数组形式
   const rawLines = smContent.split(/\r?\n/g);
   let begin = sm.line - offset;
-  const end = sm.line + offset;
-  begin = begin <= 0 ? 1 : begin;
-  // 输出源码行，因为数组索引从0开始，故行数需要-1
-  const context = rawLines.slice(begin - 1, end).join('\n');
+  const end = sm.line + offset + 1;
+  begin = begin < 0 ? 0 : begin;
+  const context = rawLines.slice(begin, end).join('\n');
   // 记得销毁
   consumer.destroy();
   return {
     context,
-    originLine: sm.line,
+    originLine: sm.line + 1, // line 是从 0 开始数，所以 +1
     source: sm.source,
   }
 };
