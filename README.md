@@ -8,7 +8,7 @@
 - 常用设计模式
 - 常考查算法
 - [《ECMAScript 6 入门教程》](https://es6.ruanyifeng.com/)
-- JS事件循环
+- [你真的懂JS事件循环吗](https://github.com/Godiswill/blog/issues/17)
 
 ## 02. CSS 基础
 
@@ -26,8 +26,8 @@
 
 ## 04. 前端性能优化
 
-- [防抖debounce与节流throttle](https://github.com/Godiswill/blog/issues/12)
 - [前端极致性能优化手册大全](https://github.com/Godiswill/blog/issues/15)
+- [防抖debounce与节流throttle](https://github.com/Godiswill/blog/issues/12)
 - [性能优化——关键路径渲染优化](https://github.com/Godiswill/blog/issues/1)
 - [HTTP 缓存](https://github.com/Godiswill/blog/issues/2)
 - [什么导致强制布局/重排](https://github.com/Godiswill/blog/issues/3)
