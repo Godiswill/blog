@@ -8,7 +8,7 @@
 - 常用设计模式
 - 常考查算法
 - [《ECMAScript 6 入门教程》](https://es6.ruanyifeng.com/)
-- [你真的懂JS事件循环吗](https://github.com/Godiswill/blog/issues/17)
+- [事件循环 -- JSConf 分享整理](https://github.com/Godiswill/blog/issues/17)
 
 ## 02. CSS 基础
 

@@ -1,4 +1,4 @@
-# 你真的懂JS事件循环吗
+# 事件循环 -- JSConf 分享整理
 [原文链接](https://github.com/Godiswill/blog/issues/17)
 
 对于浏览器而言，有多个线程协同合作，如下图。具体细节可以参考[一帧剖析](https://github.com/Godiswill/blog/issues/14)。
@@ -69,7 +69,7 @@ button.addEventListener('click', e => {
 });
 ```
 
-点击 `button` 参数一个 `task`，当执行该任务时，一直占用主线程卡死，该任务无法退出，导致无法响应用户交互或渲染动态图等。
+点击 `button` 产生一个 `task`，当执行该任务时，一直占用主线程卡死，该任务无法退出，导致无法响应用户交互或渲染动态图等。
 
 改换执行以下代码
 
@@ -305,11 +305,12 @@ button.addEventListener('click', () => {
 点击按钮会是怎么样的顺序呢？
 
 来分析一下，以上代码块为一个 `task 0`。
-1. `task 0` 执行完毕后，点击事件 `task queue` 中入队 `task 1`、`task 2`。
-1. 用户点击按钮，触发 `click` 事件。取出 `task 1` 执行，`Microtask queue` 入队 `Microtask 1`。
+1. `task 0` 执行完毕后，`webapi` 监听事件。
+1. 用户点击按钮，触发 `click` 事件，`task queue` 中入队 `task 1`、`task 2`。
+1. 轮询取出 `task 1` 执行，`Microtask queue` 入队 `Microtask 1`。
 `console` 输出 `Listener 1`。`task 1` 执行完毕。
 1. 执行所有的 `microtask`(目前只有 `Microtask 1`)，取出执行，console 输出 `Microtask 1`。
-1. 取出 `task 2` 执行，`Microtask queue` 入队 `Microtask 2`。
+1. 轮询取出 `task 2` 执行，`Microtask queue` 入队 `Microtask 2`。
 `console` 输出 `Listener 2`。`task 2` 执行完毕。
 1. 执行所有的 `microtask`，取出 `Microtask 2` 执行，console 输出 `Microtask 2`。
 
@@ -421,3 +422,4 @@ while(tasksAreWaiting()) {
 
 1. [Further Adventures of the Event Loop - Erin Zimmer@JSConf EU 2018](https://www.bilibili.com/video/av33877569?from=search&seid=6072442856935285178)
 1. [In The Loop - Jake Archibald@JSconf 2018](https://www.bilibili.com/video/av58328816?from=search&seid=9664660245862948981)
+1. [动图-事件循环](https://segmentfault.com/a/1190000021445387)
