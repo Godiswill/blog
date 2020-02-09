@@ -14,6 +14,22 @@
 
 浏览器内部有一个不停的轮询机制，检查任务队列中是否有任务，有的话就取出交给 `JS引擎` 去执行。
 
+例如：
+
+```javascript
+const foo = () => console.log("First");
+const bar = () => setTimeout(() => console.log("Second"), 500);
+const baz = () => console.log("Third");
+
+bar();
+foo();
+baz();
+```
+
+过程：
+
+![eventloop](https://raw.githubusercontent.com/Godiswill/blog/master/01JS基础/eventloop.gif)
+
 ## 任务队列 Tasks Queue
 一些常见的 `webapi` 会产生一个 `task` 送入到任务队列中。
 - `script` 标签
@@ -64,34 +80,35 @@ function loop() {
 loop();
 ```
 
-看似无限循环执行 `loop`，`setTimeout` 每次产生一个 `task`。执行完 `loop` 即退出主线程。使得用户交互事件和渲染能够得以执行。
+看似无限循环执行 `loop`，`setTimeout` 到时后产生一个 `task`。执行完 `loop` 即退出主线程。使得用户交互事件和渲染能够得以执行。
 
 正因为如此，`setTimeout` 和其他 `webapi` 产生的 `task` 执行依赖任务队列中的顺序。
-即使任务队列没有其他任务，也不能做到 `0秒` 运行，轮询取出 `task` 给引擎执行，大约最少 `4.7ms`。
+即使任务队列没有其他任务，也不能做到 `0秒` 运行，`setTimeout` 定时器到时间 `cb` 入任务队列，在轮询取出 `task` 给引擎执行，最少大约 `4.7ms`。
 
 ## requestAnimationFrame
 
 - 举个例子，不停移动一个盒子向前1像素
 
-````javascript
+```javascript
 function callback() {
   moveBoxForwardOnePixel();
   requestAnimationFrame(callback);
 }
 
 callback()
-````
+```
 
 换成 `setTimeout`
 
-````diff
+```diff
 function callback() {
   moveBoxForwardOnePixel();
-  setTimeout(callback, 0);
+-  requestAnimationFrame(callback);
++  setTimeout(callback, 0);
 }
 
 callback()
-````
+```
 
 对比，可以发现 `setTimeout` 移动明显比 `rAF` 移动快很多(3.5倍左右)。
 意味着 `setTimeout` 回调过于频繁，这并不是一件好事。
@@ -170,11 +187,11 @@ button.addEventListener('click', () => {
 
 - 不好的方式，但也能达到效果
 
-```javascript
+```diff
 button.addEventListener('click', () => {
   box.style.transform = 'translateX(1000px)';
   box.style.transition = 'transform 1s ease-in-out';
-  getComputedStyle(box).transform;
++  getComputedStyle(box).transform;
   box.style.transform = 'translateX(500px)';
 });
 ```
