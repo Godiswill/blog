@@ -1,4 +1,4 @@
-# 事件循环 -- JSConf 分享整理
+# 你真的懂事件循环吗
 [原文链接](https://github.com/Godiswill/blog/issues/17)
 
 对于浏览器而言，有多个线程协同合作，如下图。具体细节可以参考[一帧剖析](https://github.com/Godiswill/blog/issues/14)。

@@ -8,7 +8,7 @@
 - 常用设计模式
 - 常考查算法
 - [《ECMAScript 6 入门教程》](https://es6.ruanyifeng.com/)
-- [事件循环 -- JSConf 分享整理](https://github.com/Godiswill/blog/issues/17)
+- [你真的懂事件循环吗](https://github.com/Godiswill/blog/issues/17)
 
 ## 02. CSS 基础
 
@@ -19,9 +19,10 @@
 
 ## 03. 前端框架原理
 
+- [源码分析：react hook 最佳实践（上篇）](https://github.com/Godiswill/blog/issues/18)
 - Vue 双向绑定原理
 - React diff算法思路
-- mobx、redux、React Hook 等状态管理实现思路
+- mobx、redux 状态管理实现思路
 - React fiber 原理
 
 ## 04. 前端性能优化
