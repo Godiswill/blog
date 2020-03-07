@@ -153,10 +153,11 @@
           lastTime = now;
           console.log('setTimeout');
           fn.apply(this, arguments);
-        }, delay - space);
+        }, delay/* - space*/);
         return;
       }
       lastTime = now;
+      // clearTimeout(timer);
       fn.apply(this, arguments);
     };
   }

@@ -97,7 +97,7 @@ function throttleError1(fn, delay) {
   let lastTime = 0;
   return function () {
     const now = new Date().getTime();
-    const space = now - lastTime; // 时间间隔
+    const space = now - lastTime; // 时间间隔，首次会是很大一个值
     if (space > delay) {
       lastTime = now;
       fn.apply(this, arguments);
@@ -120,14 +120,16 @@ function throttleError2(fn, delay) {
 ```
 这两个版本都有的问题，先假设 `delay=100ms`，假设定时器都是按时执行的。
 - 时间戳版
-1. 用户在 0-100ms 内执行的交互均无效，之后你在 100-200ms 之间的交互只有一次会执行。
-例如你在 101ms 会执行，之后 101-200ms 操作交互丢失了。好比你在 0-100ms 内不管怎么拧开水龙头，要 100ms 后再拧一次才能出水。
-1. 最后一次的状态容易丢失，例如要用滚动条离顶部的高度来设置样式，滚动条在 99ms 从 0 滚动到 100px 处，你没办法处理。
+1. 由于首次 `now - lastTime === now` 该值很大，首次 0ms 立即执行，用户接在 0-100ms 内执行的交互均无效，假如用户停留在 99ms，则最后一次丢失了。
+1. 例如要用滚动条离顶部的高度来设置样式，滚动条在 99ms 从 0 滚动到 100px 处，你没办法处理。
 
 - 定时器版
-1. 同样有 100ms 延迟，虽然不需要在 100ms 后再拧一次，好比开第一枪需要 100ms 后子弹才能出来。
+1. 首次 0ms 不会立即执行有 100ms 延迟，好比开第一枪需要 100ms 后子弹才能出来。
 
-- 聪明的读者，可能想到了，可以结合两者来解决首次延迟和获取最后状态问题。
+- 聪明的读者，可能想到了，可以结合两者来解决问题。
+1. 首次 0ms 立即执行无延迟；
+1. 获取最后状态，保证最后一次得到执行。
+
 ### 案例
 
 - 滚动滑动条时视觉上连续调整 `dom`
@@ -182,9 +184,48 @@ window.addEventListener('scroll', function() {
 
 - 细心的读者可能会问，假如交互停留在 199ms，定时器在 300ms 段才执行，间隔了约 200ms，定时器延迟应该设置为 `delay - space`。
 
-- 确实，但为了最后一次准时，却在中间导致过多性能损耗是否值得，这就留给读者去评估了。
+[throttle-last-delay](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/throttle-last-delay.jpg)
 
-![节流准时](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/throttle2.jpg)
+```diff
+/**
+* 时间戳来处理首次和间隔执行问题
+* 定会器来确保最后一次状态改变得到执行
+* @param fn
+* @param delay
+* @returns {Function}
+*/
+function throttle(fn, delay) {
+  let timer, lastTime;
+  return function() {
+    const now = new Date().getTime();
+    const space = now - lastTime; // 间隔时间
+    if( lastTime && space < delay ) { // 为了响应用户最后一次操作
+      // 非首次，还未到时间，清除掉计时器，重新计时。
+      timer && clearTimeout(timer);
+      // 重新设置定时器
+      timer = setTimeout(() => {
+        lastTime = now; // 不要忘了记录时间
+        fn.apply(this, arguments);
+-      }, delay);
++      }, delay - space);
+      return;
+    }
+    // 首次或到时间了
+    lastTime = now;
+    fn.apply(this, arguments);
++    // 当前已执行，清除掉计时器，不清除会有多余的中间执行
++    timer && clearTimeout(timer);
+  };
+}
+```
+
+- 如果忘了最后清除
+
+![throttle-no-cancel](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/throttle-no-cancel.jpg)
+
+- 最终效果
+
+![throttle-final](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/throttle-final.jpg)
 
 ## 总结
 
