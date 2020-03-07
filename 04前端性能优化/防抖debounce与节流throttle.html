@@ -146,12 +146,14 @@
     let timer, lastTime;
     return function() {
       const now = new Date().getTime();
-      if( lastTime && now - lastTime < delay ) {
+      const space = now - lastTime;
+      if( lastTime && space < delay ) {
         timer && clearTimeout(timer);
         timer = setTimeout(() => {
           lastTime = now;
+          console.log('setTimeout');
           fn.apply(this, arguments);
-        }, delay);
+        }, delay - space);
         return;
       }
       lastTime = now;
