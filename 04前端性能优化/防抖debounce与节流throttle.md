@@ -123,6 +123,8 @@ function throttleError2(fn, delay) {
 1. 由于首次 `now - lastTime === now` 该值很大，首次 0ms 立即执行，用户接在 0-100ms 内执行的交互均无效，假如用户停留在 99ms，则最后一次丢失了。
 1. 例如要用滚动条离顶部的高度来设置样式，滚动条在 99ms 从 0 滚动到 100px 处，你没办法处理。
 
+- PS: 时间戳版，有一个应用场景，在一定时间内防止重复提交。
+
 - 定时器版
 1. 首次 0ms 不会立即执行有 100ms 延迟，好比开第一枪需要 100ms 后子弹才能出来。
 
@@ -172,7 +174,7 @@ window.addEventListener('scroll', function() {
 ```
 - 节流前
 
-回调过于密集
+回调过于密集。（PS：经常听到 `scroll` 自带节流，就是指一帧 `16ms` 左右触发一次） 
 
 ![未节流](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/noThrottle.jpg)
 
@@ -182,9 +184,9 @@ window.addEventListener('scroll', function() {
 
 ![节流后](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/throttle.jpg)
 
-- 细心的读者可能会问，假如交互停留在 199ms，定时器在 300ms 段才执行，间隔了约 200ms，定时器延迟应该设置为 `delay - space`。
+- 细心的读者可能会发现，假如交互停留在 199ms，定时器在 300ms 段才执行，间隔了约 200ms，定时器延迟不应该设置为原来的 `delay`。
 
-[throttle-last-delay](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/throttle-last-delay.jpg)
+![throttle-last-delay](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/throttle-last-delay.jpg)
 
 ```diff
 /**
@@ -227,6 +229,23 @@ function throttle(fn, delay) {
 
 ![throttle-final](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/throttle-final.jpg)
 
+- 可以发现时间没有改之前那么准确，说明有些细节还是没有拿捏好，这里就不继续讨论下去了。
+
+- 实际生产还是使用 `lodash` 成熟可靠的的[防抖](https://github.com/lodash/lodash/blob/master/debounce.js)、[节流](https://github.com/lodash/lodash/blob/master/throttle.js)实现。
+
+- lodash 效果
+
+![lodash](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/lodash.jpg)
+
+- 查看 `lodash` 源码可以发现节流，是靠 `leading` 来控制首次是否需要执行，`trailing` 来控制 99ms 停止 100ms时需不需要执行，
+`maxWait` 来控制定时执行，看完本篇去分析，是不是就很好理解了呢。
+
+- 举几个常用的 `lodash` 使用方式。
+1. 实现类似 `scroll` 自带一帧 `16ms` 效果：`throttle(fn, /* wait = undefined */)`，其实内部用到了 `requestAnimationFrame`。
+1. 非常常用，发请求防止重复提交，例如首次点击执行，`500ms` 内的点击一律不执行： `debounce(fn, 500, { leading: true, trailing: false })`
+1. 例如某个 `dom` 被清除，`debounced.cancel()` 来取消最后一次(trailing)调用，避免取不到 dom 报错。
+1. 等等。
+
 ## 总结
 
 防抖、节流都是利用闭包来实现内部数据获取与维护。
@@ -234,5 +253,5 @@ function throttle(fn, delay) {
 防抖、节流对于频繁dom事件性能优化是不可或缺的手段。
 
 ## 参考
-
+1. [文中 demo](https://github.com/Godiswill/blog/blob/master/04%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E9%98%B2%E6%8A%96debounce%E4%B8%8E%E8%8A%82%E6%B5%81throttle.html)
 1. [7分钟理解JS的节流、防抖及使用场景](https://juejin.im/post/5b8de829f265da43623c4261)
