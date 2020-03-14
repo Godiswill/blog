@@ -333,4 +333,5 @@ measures.forEach(measureItem => {
 1. [User Timing Level 2](https://www.w3.org/TR/user-timing/)
 1. [boomerang](https://github.com/akamai/boomerang/blob/master/plugins/restiming.js)
 1. [commercial boomerang](https://www.akamai.com/cn/zh/products/performance/mpulse-real-user-monitoring.jsp)
+1. [Resource Timing practical tips](http://www.stevesouders.com/blog/2014/08/21/resource-timing-practical-tips/)
 1. [前端监控实践——FMP的智能获取算法](https://www.codercto.com/a/40349.html)
