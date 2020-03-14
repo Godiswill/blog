@@ -45,6 +45,13 @@
 
 ## 06. web 安全问题
 
+- XSS
+1. 存储型
+1. 反射型
+1. DOM型
+- CSRF
+- SSRF
+
 ## 07. 开发工具
 
 - chrome devtool
@@ -55,6 +62,7 @@
 ### 公共模板及文档建设
 
 - vue-cli、create-react-app的原理和实现
+- node 命令行 commander、inquirer、chalk
 - doc 生成工具
 - 区块概念
 
@@ -69,10 +77,17 @@
 - [rollup 打包实践](https://github.com/Godiswill/blog/issues/6)
 - webpack loader/plugin 等实现细节
 
-### 发布系统
+### 持续集成 -- 测试、构建、发布部署系统
+
+1. 用户触发构建 -> Jenkins 执行任务 test/build/合master 打tag
+1. 用户触发部署 -> Jenkins 执行任务 -> 推送 oss
+1. 用户触发回滚 -> Jenkins 根据 tag 拉代码覆盖 oss
+
+html 不缓存 其他静态资源 hash 文件名长缓存。
 
 - Jenkins
-- git hook to CDN
+- git webhook
+- CDN
 
 ### 错误监控系统
 
@@ -89,3 +104,9 @@
 - docker hub
 - docker compose + git
 - k8s
+
+### 前端微服务
+
+- iframe
+- nginx 代理路由
+- npm 包

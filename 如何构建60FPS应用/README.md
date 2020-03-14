@@ -14,21 +14,23 @@
 
 - 只有可见元素才会出现在渲染树中，注意可见的含义，例如
 ```CSS
-    .style1 { /* 不在最终的渲染树中 */
-        display: none;
-    }
-    /* 以下均实际存在最终的渲染树中 */
-    .style2 {
-        height: none;
-    }
-    .style3::before {
-        content: '',
-        display: block;
-    }
-    .style4 {
-        position: absolute;
-        left: 100%;
-    }
+/* 不在最终的渲染树中 */
+.style1 {
+    display: none;
+}
+
+/* 以下均实际存在最终的渲染树中 */
+.style2 {
+    height: none;
+}
+.style3::before {
+    content: '';
+    display: block;
+}
+.style4 {
+    position: absolute;
+    left: 100%;
+}
 ```
 
 - Render Tree 不包含 `<head>` 等不可见的节点，但包含不在 DOM 中的伪元素(`:after`)。
@@ -194,41 +196,39 @@ CSS 样式开销不容忽视，好的命名方式，适当的复杂度都有利�
 - 从最新 Chrome 测试来看，浏览器对这方面的优化做的很好了，一下这种缩短样式查询难度的方式，得到的改进有限。
 
 ```CSS
-    body.toggled main .box-container .box:nth-child(2n) {
-      background: #777 !important;
-    }
+body.toggled main .box-container .box:nth-child(2n) {
+  background: #777 !important;
+}
 
-    /* 改成 */
-
-    .box.gray {
-        background: #777 !important;
-    }
-
+/* 改成 */
+.box.gray {
+    background: #777 !important;
+}
 ```
 
 ```javaScript
-    button.addEventListener('click', function() {
-      document.body.classList.toggle('toggled');
-      // 新增
-      var boxes = container.querySelectorAll('.box');
-      for(var i = 1; i < boxes.length; i += 2) {
-          boxes[i].classList.toggle('gray', document.body.classList.contains('toggled'));
-      }
-    });
+button.addEventListener('click', function() {
+  document.body.classList.toggle('toggled');
+  // 新增
+  var boxes = container.querySelectorAll('.box');
+  for(var i = 1; i < boxes.length; i += 2) {
+    boxes[i].classList.toggle('gray', document.body.classList.contains('toggled'));
+  }
+});
 ```
 
 - 主要的性能损耗在合成层级爆炸。
 ```CSS
-    main .box-container .box {
-      display: inline-block;
-      width: 40px;
-      height: 40px;
-      background: #FFF;
-      box-shadow: 0 1px 1px rgba(0,0,0,0.3);
-      margin: 5px;
-      position: relative;
-      will-change: transform; /* 提升了层级，导致层级爆炸 */
-    }
+main .box-container .box {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  background: #FFF;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  margin: 5px;
+  position: relative;
+  will-change: transform; /* 提升了层级，导致层级爆炸 */
+}
 ```
 
 ![too-much-layers](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/too-much-layers.png)
@@ -297,11 +297,11 @@ CSS 样式开销不容忽视，好的命名方式，适当的复杂度都有利�
 
 ```CSS
 .create-new-layer {
-    /* 暗示浏览器开发者会在某个时间点更改元素 transform 属性，浏览器可能会创建新图层。这样的好处是可能浏览器认为此事创建图层开销很高，不一定会创建 */
-    will-change: transform;	 
+  /* 暗示浏览器开发者会在某个时间点更改元素 transform 属性，浏览器可能会创建新图层。这样的好处是可能浏览器认为此事创建图层开销很高，不一定会创建 */
+  will-change: transform;	 
 
-    /* hacker 强制浏览器创建图层 */
-    transform: translateZ(0); 
+  /* hacker 强制浏览器创建图层 */
+  transform: translateZ(0); 
 }
 ```
 

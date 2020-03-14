@@ -20,8 +20,8 @@
 
 ````javascript
 (function flexible (window, document) {
-  var docEl = document.documentElement 		// html
-  var dpr = window.devicePixelRatio || 1  // 设备像素比，可以拿掉，作用不大
+  var docEl = document.documentElement 	 // html
+  var dpr = window.devicePixelRatio || 1 // Retina 屏幕 dpr >= 2，1px像素边框会变粗
 
   // adjust body font size
   /**
@@ -30,7 +30,7 @@
   * 字体一般不需要等比缩放太大
   * 对于文字内容为主的站点字体直接设为 px
   * 例如很多m站，在pc上看就字体超大
-	*/
+  */
   function setBodyFontSize () {
     if (document.body) {
       // mac 浏览器 window.devicePixelRatio=2，导致 body 24px 太大了
@@ -53,7 +53,7 @@
   * 十分不方便，生活简单点
   * 很多站点都把 1rem = 100px
   * 方便写样式
-	*/
+  */
   function setRemUnit () {
     // var rem = docEl.clientWidth / 10
     var rem = docEl.clientWidth / 7.5
@@ -73,6 +73,12 @@
 
   // detect 0.5px supports
   // 1像素问题
+  // div {
+  //   border: 1px solid #bbb;
+  // }
+  // .hairlines div {
+  //   border-width: 0.5px;
+  // }
   if (dpr >= 2) {
     var fakeBody = document.createElement('body')
     var testElement = document.createElement('div')
