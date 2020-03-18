@@ -6,7 +6,8 @@
 ### 阶段性指标
 | 字段 | 描述 | 计算方式 | 备注 |
 | -- | --- | ---- | -- |
-| redirect | 重定向耗时 | redirectEnd - redirectStart |  |
+| unload | 前一个页面卸载耗时 | unloadEventEnd - unloadEventStart | 前一个页面卸载时可能监听了 unload 做些数据收集，会影响页面跳转 |
+| redirect | 重定向耗时 | redirectEnd - redirectStart | 过多重定向影响性能 |
 | dns | DNS 解析耗时 | domainLookupEnd - domainLookupStart |  |
 | tcp | TCP 连接耗时 | connectEnd - connectStart |  |
 | ssl | SSL 安全连接耗时 | connectEnd - secureConnectionStart | 只在 HTTPS 下有效 |
@@ -32,7 +33,7 @@
 | fpt | First Paint Time, 首次渲染时间 | onShow (first page) - onLaunch (app) | 小程序从 onLaunch 到第一个页面 onShow 之间的时间 |
 
 
-## Navigation Timing Level 1
+## W3C Level 1
 ### 兼容性
 ![navigation-timing1](https://raw.githubusercontent.com/Godiswill/blog/master/08%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/navigation-timing1.jpg)
 ### 常规用法
@@ -47,7 +48,7 @@ const pageloadtime = t.loadEventStart - t.navigationStart,
 ```
 - 计算页面资源
 ```javascript
-const r0 = performance.getEntriesByType("resource")[0];
+const r0 = performance.getEntriesByType('resource')[0];
 
 const loadtime = r0.duration,
   dns = r0.domainLookupEnd - r0.domainLookupStart,
@@ -175,14 +176,14 @@ if ( r0.secureConnectionStart ) {
 
 PS：iframe 与文档环境是相互隔离的，你可以获取 iframe 的 contentWindow.performance 来获取。
 
-## Navigation Timing Level 2
+## W3C Level 2
 ### 兼容性
 ![PerformanceNavigationTiming](https://raw.githubusercontent.com/Godiswill/blog/master/08%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/PerformanceNavigationTiming.jpg)
 ### 用法
 #### PerformanceNavigationTiming
 - 代替 `performance.timing`(目前兼容性高，仍然可使用，未来可能被废弃)。
 ```javascript
-const navigationEntries = performance.getEntriesByType('navigation')[0];
+const pageNav = performance.getEntriesByType('navigation')[0];
 ```
 - PerformanceNavigationTiming 使用了High-Resolution Time，时间精度可以达毫秒的小数点好几位。
 ```json
@@ -227,12 +228,15 @@ const navigationEntries = performance.getEntriesByType('navigation')[0];
 ```javascript
 // Service worker 响应时间
 let workerTime = 0;
-if (navigationEntries.workerStart > 0) {
-  workerTime = navigationEntries.responseEnd - navigationEntries.workerStart;
+if (pageNav.workerStart > 0) {
+  workerTime = pageNav.responseEnd - pageNav.workerStart;
 }
 
 // HTTP header 大小
-const headerSize = navigationEntries.transferSize - navigationEntries.encodedBodySize;
+const headerSize = pageNav.transferSize - pageNav.encodedBodySize;
+
+// 压缩比率
+const compressionRatio = pageNav.decodedBodySize / pageNav.encodedBodySize;
 ```
 - 兼容，由于 `performance.getEntriesByType('navigation')` 取不到并不会报错而是返回空数组。
 ```javascript
@@ -269,7 +273,9 @@ performance.getEntriesByType("paint");
   }
 ]
 ```
-- 官方监听案例
+- `performance.getEntriesByType` 返回的是数组，只有准备好的数据才能入组，你可能需要轮询，或找到一个恰当的时间点来上报数据。
+新标准，提供了 `PerformanceObserver` API 来帮你监听响应的资源数据是否准备好了。
+
 ```javascript
 const observer = new PerformanceObserver((list) => {
   for (const entry of list.getEntries()) {
@@ -283,7 +289,17 @@ const observer = new PerformanceObserver((list) => {
     });
   }
 });
-observer.observe({entryTypes: ['paint']});
+observer.observe({entryTypes: ['paint'/* , 'navigation', resource */]});
+```
+- 使用需要做代码兼容
+```javascript
+if ('performance' in window) {
+  if ('PerformanceObserver' in window) {
+    // todo
+  } else {
+    // todo
+  }
+}
 ```
 
 - 首次有效绘制First Meaning Paint (FMP)：表示当前页面最想展示给用户的元素渲染的时间点，即主元素渲染点。
@@ -326,6 +342,51 @@ measures.forEach(measureItem => {
 });
 ```
 
+## 上报数据
+
+- 一般可以考虑在用户准备卸载页面时上报，毫无疑问这个时间点不会干扰用户在当前页的操作。
+但是如果上报耗时很长，会影响用户跳转到下一页的体验。可以使用 `navigator.sendBeacon`。
+
+```javascript
+window.addEventListener("unload", function() {
+  // 注意 performance.getEntries 会取当前页所有资源包括页面本身的性能信息
+  // 注意 数据体量问题
+  let rumData = new FormData();
+  rumData.append("entries", JSON.stringify(performance.getEntries()));
+
+  // 是否支持
+  if("sendBeacon" in navigator) {
+    // Beacon 发起请求
+    if(navigator.sendBeacon(endpoint, rumData)) {
+      // sendBeacon 发送成功
+    } else {
+      // sendBeacon 发送失败! 使用 XHR or fetch 代替
+    }
+  } else {
+    // sendBeacon 不支持! 使用 XHR or fetch 代替
+  }
+}, false);
+```
+
+- 传统解决方案，在 `unload` 中处理
+1. 因为页面卸载了，就不会关心异步 ajax 的完成接收，所以一般使用同步 ajax 来阻塞页面卸载。
+1. 创建图片，用 img src 来发送请求。
+1. setTimeout(ajax, 0)。
+
+- navigator.sendBeacon 解决了以上问题
+1. 页面卸载了，依旧可以异步请求。
+1. 不阻塞当前页的卸载。
+1. 使用简单。
+
+## 总结
+- `Navigation Timing` 收集 HTML 文档性能指标。
+1. `performance.timing` 常用、解决兼容性
+1. `performance.getEntriesByType('navigation')[0]` 新标准，精度高内容更详细，兼容性较差
+- `Resource Timing` 收集 HTML 依赖的资源的性能指标，如样CSS、JS、图片、字体等。
+1. `performance.getEntriesByType('resource')` 新老一样使用，新标准做了扩展。
+-  `User timing` 收集用户自定义
+1. `performance.getEntriesByType('measure')` 可以考虑，用来对 FMP 打点。
+
 ## 参考
 1. [HTML DOM标准](https://html.spec.whatwg.org/multipage/dom.html#current-document-readiness)
 1. [W3C Navigation Timing](https://www.w3.org/TR/navigation-timing/)
@@ -335,3 +396,7 @@ measures.forEach(measureItem => {
 1. [commercial boomerang](https://www.akamai.com/cn/zh/products/performance/mpulse-real-user-monitoring.jsp)
 1. [Resource Timing practical tips](http://www.stevesouders.com/blog/2014/08/21/resource-timing-practical-tips/)
 1. [前端监控实践——FMP的智能获取算法](https://www.codercto.com/a/40349.html)
+1. [Assessing Loading Performance in Real Life with Navigation and Resource Timing](https://developers.google.com/web/fundamentals/performance/navigation-and-resource-timing)
+1. [Navigator.sendBeacon](https://developer.mozilla.org/zh-CN/docs/Web/API/Navigator/sendBeacon)
+1. [performance-bookmarklet](https://github.com/micmro/performance-bookmarklet)
+1. [waterfall.js](https://github.com/andydavies/waterfall/blob/master/waterfall.js)
