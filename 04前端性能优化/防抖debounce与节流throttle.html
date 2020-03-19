@@ -95,10 +95,10 @@
 <div style="height: 100px">滑动节流100ms测试</div>
 <div style="height: 100px">到底</div>
 <script>
-  let last = new Date().getTime();
+  let last = Date.now();
   //模拟一段ajax请求
   function ajax(content) {
-    const d = new Date().getTime();
+    const d = Date.now();
     const span = d - last;
     console.log(`${content} 间隔 ${span}ms`);
     last = d;
@@ -144,20 +144,20 @@
   function throttle(fn, delay) {
     let timer, lastTime;
     return function() {
-      const now = new Date().getTime();
+      const now = Date.now();
       const space = now - lastTime;
       if( lastTime && space < delay ) {
         timer && clearTimeout(timer);
         timer = setTimeout(() => {
-          lastTime = now;
+          lastTime = Date.now();
           console.log('setTimeout');
           fn.apply(this, arguments);
-        }, delay/* - space*/);
+        }, delay - space);
         return;
       }
       lastTime = now;
-      // clearTimeout(timer);
       fn.apply(this, arguments);
+      timer && clearTimeout(timer);
     };
   }
   const throttleAjax = throttle(ajax, 100);

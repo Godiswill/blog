@@ -5,8 +5,7 @@
 - [JS面向对象](https://github.com/Godiswill/blog/issues/8)（封装、继承、多态）
 - [实现继承的几种方式](https://github.com/Godiswill/blog/issues/9)（原型、构造函数、组合、寄生组合、类式、拷贝继承）
 - [一图理解原型链](https://github.com/Godiswill/blog/issues/10)（实例对象是如何与自己的构造函数、`Function`、`Object` 串联起来的）
-- 常用设计模式
-- 常考查算法
+- [JS基础手写代码](https://github.com/Godiswill/blog/issues/20)
 - [《ECMAScript 6 入门教程》](https://es6.ruanyifeng.com/)
 - [你真的懂事件循环吗](https://github.com/Godiswill/blog/issues/17)
 

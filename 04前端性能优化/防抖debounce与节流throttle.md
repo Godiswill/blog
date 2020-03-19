@@ -19,10 +19,10 @@
 
 ```javascript
 // 记录时间
-let last = new Date().getTime();
+let last = Date.now();
   //模拟一段ajax请求
 function ajax(content) {
-  const d = new Date().getTime();
+  const d = Date.now();
   const span = d - last;
   console.log(`${content} 间隔 ${span}ms`);
   last = d;
@@ -96,7 +96,7 @@ debounceInput.addEventListener('keyup', function(e) {
 function throttleError1(fn, delay) {
   let lastTime = 0;
   return function () {
-    const now = new Date().getTime();
+    const now = Date.now();
     const space = now - lastTime; // 时间间隔，首次会是很大一个值
     if (space > delay) {
       lastTime = now;
@@ -147,14 +147,14 @@ function throttleError2(fn, delay) {
 function throttle(fn, delay) {
   let timer, lastTime;
   return function() {
-    const now = new Date().getTime();
+    const now = Date.now();
     const space = now - lastTime; // 间隔时间
     if( lastTime && space < delay ) { // 为了响应用户最后一次操作
       // 非首次，还未到时间，清除掉计时器，重新计时。
       timer && clearTimeout(timer);
       // 重新设置定时器
       timer = setTimeout(() => {
-        lastTime = now; // 不要忘了记录时间
+        lastTime = Date.now(); // 不要忘了记录时间
         fn.apply(this, arguments);
       }, delay);
       return;
@@ -199,14 +199,15 @@ window.addEventListener('scroll', function() {
 function throttle(fn, delay) {
   let timer, lastTime;
   return function() {
-    const now = new Date().getTime();
+    const now = Date.now();
     const space = now - lastTime; // 间隔时间
     if( lastTime && space < delay ) { // 为了响应用户最后一次操作
       // 非首次，还未到时间，清除掉计时器，重新计时。
       timer && clearTimeout(timer);
       // 重新设置定时器
       timer = setTimeout(() => {
-        lastTime = now; // 不要忘了记录时间
+        // lastTime = now; // （改：不准）
+        lastTime = Date.now(); // 不要忘了记录时间
         fn.apply(this, arguments);
 -      }, delay);
 +      }, delay - space);
@@ -228,8 +229,6 @@ function throttle(fn, delay) {
 - 最终效果
 
 ![throttle-final](https://raw.githubusercontent.com/Godiswill/blog/master/04前端性能优化/throttle-final.jpg)
-
-- 可以发现时间没有改之前那么准确，说明有些细节还是没有拿捏好，这里就不继续讨论下去了。
 
 - 实际生产还是使用 `lodash` 成熟可靠的的[防抖](https://github.com/lodash/lodash/blob/master/debounce.js)、[节流](https://github.com/lodash/lodash/blob/master/throttle.js)实现。
 
