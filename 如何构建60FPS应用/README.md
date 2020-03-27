@@ -1,8 +1,10 @@
 # 如何构建 60FPS 应用
-
 [原文链接](https://github.com/Godiswill/blog/issues/5)
 
-### 渲染生命周期
+## 前言
+本文是对谷歌工程师公开课的总结，非常有价值，建议去学习。
+
+## 渲染生命周期
 
 - 渲染管道流
 
@@ -69,7 +71,7 @@
 
 ![layout-boundaries](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/layout-boundaries.png)
 
-一般情况下影响的范围一样大，都是整个文档。特殊情况下可以提升[布局边界](https://github.com/Godiswill/blog/issues/4)，改变布局影响的范围。
+- 一般情况下影响的范围一样大，都是整个文档。特殊情况下可以提升[布局边界](https://github.com/Godiswill/blog/issues/4)，改变布局影响的范围。
 
 ![boundary](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/boundary.png)
 
@@ -89,7 +91,7 @@
 ![composite](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/pipe-composite.png)
 
 
-### RAIL 评估模型
+## RAIL 评估模型
 ![RAIL](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/RAIL.png)
 
 1. Response：例如用户点击按钮、勾选框、输入文本等操作，包括网络请求的时间应该控制在 `100ms` 内。超过 100ms 用户会明显的感受到延迟。
@@ -97,7 +99,7 @@
 3. Idle：在网页资源加载完毕或让用户感知到响应时，有 `50ms` 的空闲时间，开发者可以利用这 50ms 来执行一些不重要的或为用户下一步交互提前准备的任务。为了及时响应用户的交互，每个事件循环执行的任务时长不能超过 `50ms`，通常称超过 50ms 的任务为`长任务`。
 4. Load：从网页请求到下载解析显示重要内容且和交互的时间应在 `1s` 内，即关键路径渲染流程应该不超过 `1s`。
 
-长任务警告
+- 长任务警告
 
 ![long-task](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/long-task.png)
 
@@ -131,13 +133,13 @@
 
 ![](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/animation-with-gif.png)
 
-### 卡顿网站体验
+## 卡顿网站体验
 
 - [案例1](http://output.jsbin.com/nanana/2/quiet)
 - [案例2](https://d17h27t6h515a5.cloudfront.net/topher/2017/October/59defb6e_index/index.html)
 
 
-### javaScript
+## javaScript
 
 众所周知JS是一门动态语言，即时编译(Just In Time)引擎在编译你写的代码过程中，会一点点优化你的代码。
 
@@ -155,7 +157,7 @@
 - 2、16ms 内执行 JS 看似很美好，但并不能保证每帧准时执行
 - 3、4，由于 JS 在一帧渲染管道的开始，应该尽量在渲染之初就应该 JS 执行完毕，而不影响后面布局、绘制。
 
-#### 创建动画的必备工具：`requestAnimationFrame`
+### 创建动画的必备工具：`requestAnimationFrame`
 [requestAnimationFrame Polyfill](https://gist.github.com/paulirish/1579671)
 
 - 我们知道一帧执行只有 `16ms` ，除去浏览器其他开销大概只有 `10ms`, 这 10ms 还包括布局、合成和绘制的时间，留给JS执行只有`3-4ms`。
@@ -166,14 +168,14 @@ requestAnimationFrame 与 setTimeout、setInterval
 
 ![requestidlecallback](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/requestidlecallback.jpg)
 
-#### Web Work
+### Web Work
 
 - 对于一些非常复杂耗时的计算，可以考虑使用 `Web Work` ，文末给出了参考链接。
 
 算法的魅力：[比较冒泡排序与内置排序](http://jsbin.com/feloni/3/quiet)
 
 
-### 样式和布局
+## 样式和布局
 
 思考：样式修改的代价，样式改变影响元素节点的数量与 `Recalculate Style` 开销成什么（固定、指数、线性、未知）关系?
 
@@ -233,7 +235,7 @@ main .box-container .box {
 
 ![too-much-layers](https://raw.githubusercontent.com/Godiswill/blog/master/如何构建60FPS应用/too-much-layers.png)
 
-#### 强制布局 FSL (Forced Synchronous Layout) / 强制重排(Force Reflow)，以下哪些会造成 FSL
+### 强制布局 FSL (Forced Synchronous Layout) / 强制重排(Force Reflow)，以下哪些会造成 FSL
 
 [实例网站](https://udacity.github.io/60fps/lesson5/stopFSL/index.html)
 
@@ -254,7 +256,7 @@ main .box-container .box {
 - 先修改样式，在读取布局属性，表面上符合管道顺序，关键在于循环，在一帧中会循环执行样式计算和布局操作。
 - 先读取布局属性，会触发管道 `Recalculate Style`，但布局值可以取上一帧的值，虽然在循环中修改样式，但浏览器可以优化批量处理样式，然后Layout、Paint等后续操作。
 
-### 合成与绘制
+## 合成与绘制
 
 思考：绘制分析器执行的第一个命令是什么
 
@@ -323,7 +325,7 @@ main .box-container .box {
 这是 [Cameron](https://github.com/udacity/news-aggregator/tree/solution) 的应用！
 这是 [bugs](https://github.com/udacity/news-aggregator/blob/gh-pages/hints/all-bugs.md) 的完整列表！
 
-### 参考网站
+## 参考网站
 1. [评估关键渲染路径](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/measure-crp)
 2. [避免大型、复杂的布局和布局抖动](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)
 3. [以用户为中心的性能指标](https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics#user-centric_performance_metrics)

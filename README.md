@@ -13,7 +13,7 @@
 
 - [BFC块级格式化上下文](https://github.com/Godiswill/blog/issues/11)
 - 动画`Animation`，过渡`transition`
-- 常用布局
+- [常用布局](https://github.com/Godiswill/blog/issues/21)
 - 移动适配 [amfe-flexible 分析](https://github.com/Godiswill/blog/issues/13)
 
 ## 03. 前端框架原理
@@ -39,7 +39,7 @@
 ## 05. JS服务端
 
 - 跨域jsonp、cors
-- koa 源码分析
+- [koa 源码分析](https://github.com/Godiswill/blog/issues/22)
 - egg 实战
 
 ## 06. web 安全问题

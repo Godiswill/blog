@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>常见布局</title>
+    <style>
+        .left {
+            background-color: red;
+        }
+        .right {
+            background-color: green;
+        }
+        .middle {
+            background-color: palegreen;
+        }
+        .clearfix::after {
+            content: ' ';
+            clear: both;
+            display: block;
+            height: 0;
+        }
+        .two-col .left {
+            width: 200px;
+            float: left;
+        }
+        .two-col .right {
+            margin-left: 200px;
+        }
+        .two-col-flex {
+            display: flex;
+        }
+        .two-col-flex .left {
+            /*width: 200px;*/
+            flex: 0 0 200px;
+        }
+        .two-col-flex .right {
+            flex: auto;
+        }
+
+        .two-col-position {
+            position: relative;
+        }
+        .two-col-position .left {
+            /*position: absolute;*/
+            width: 200px;
+        }
+        .two-col-position .right {
+            /*margin-left: 200px;*/
+            position: absolute;
+            top: 0;
+            left: 200px;
+            right: 0;
+        }
+
+        .tree-col-float .left {
+            float: left;
+            width: 200px;
+        }
+        .tree-col-float .right {
+            float: right;
+            width: 100px;
+        }
+        .tree-col-float .middle {
+            margin: 0 100px 0 200px;
+        }
+
+        .tree-col-position {
+            position: relative;
+        }
+        .tree-col-position .left {
+            position: absolute;
+            width: 100px;
+        }
+        .tree-col-position .right {
+            position: absolute;
+            width: 200px;
+            right: 0;
+        }
+        .tree-col-position .middle {
+            margin: 0 200px 0 100px;
+        }
+
+        .tree-col-flex {
+            display: flex;
+        }
+        .tree-col-flex .left {
+            flex: 0 0 200px;
+        }
+        .tree-col-flex .middle {
+            flex: auto;
+        }
+        .tree-col-flex .right {
+            flex: 0 0 100px;
+        }
+
+        .header, .footer {
+            background-color: aqua;
+            text-align: center;
+        }
+        .holy-grail {
+            min-width: 500px;
+        }
+        .holy-grail .container {
+            margin-left: 150px;
+            margin-right: 200px;
+        }
+        .holy-grail .middle {
+            float: left;
+            width: 100%;
+        }
+        .holy-grail .left {
+            float: left;
+            width: 150px;
+            margin-left: -100%;
+            position: relative;
+            /*right: 150px;*/
+            left: -150px;
+        }
+        .holy-grail .right {
+            float: left;
+            width: 200px;
+            margin-right: -200px;
+        }
+
+        .double-wings .container {
+            float: left;
+            width: 100%;
+        }
+        .double-wings .middle {
+            margin-left: 200px;
+            margin-right: 150px;
+        }
+        .double-wings .left {
+            float: left;
+            width: 200px;
+            margin-left: -100%;
+        }
+        .double-wings .right {
+            float: left;
+            width: 150px;
+            margin-left: -150px;
+        }
+        .double-wings .footer {
+            clear: both;
+        }
+
+        .holy-grail-flex .container {
+            display: flex;
+        }
+        .holy-grail-flex .middle {
+            flex: auto;
+        }
+        .holy-grail-flex .left {
+            flex: 0 0 200px;
+            order: -1;
+        }
+        .holy-grail-flex .right {
+            flex: 0 0 100px;
+        }
+    </style>
+</head>
+<body>
+<h3>两栏布局——float</h3>
+<div class="two-col clearfix">
+    <div class="left">
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+    </div>
+    <div class="right">
+        <div>right</div>
+        <div>right</div>
+        <div>right</div>
+    </div>
+</div>
+
+<h3>两栏布局——flex</h3>
+<div class="two-col-flex">
+    <div class="left">
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+    </div>
+    <div class="right">
+        <div>right</div>
+        <div>right</div>
+        <div>right</div>
+    </div>
+</div>
+
+<h3>两栏布局——position</h3>
+<div class="two-col-position">
+    <div class="left">
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+    </div>
+    <div class="right">
+        <div>right</div>
+        <div>right</div>
+        <div>right</div>
+    </div>
+</div>
+
+<h3>三栏布局——float</h3>
+<div class="tree-col-float clearfix">
+    <div class="left">
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+    </div>
+    <div class="right">
+        <div>right</div>
+        <div>right</div>
+        <div>right</div>
+    </div>
+    <div class="middle">
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+    </div>
+</div>
+
+<h3>三栏布局——position</h3>
+<div class="tree-col-position">
+    <div class="left">
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+    </div>
+    <div class="right">
+        <div>right</div>
+        <div>right</div>
+        <div>right</div>
+    </div>
+    <div class="middle">
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+    </div>
+</div>
+
+<h3>三栏布局——flex</h3>
+<div class="tree-col-flex">
+    <div class="left">
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+    </div>
+    <div class="middle">
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+        <div>middle</div>
+    </div>
+    <div class="right">
+        <div>right</div>
+        <div>right</div>
+        <div>right</div>
+    </div>
+</div>
+
+<h3>圣杯</h3>
+<div class="holy-grail">
+    <div class="header">#header</div>
+    <div class="container clearfix">
+        <div class="middle">
+            <div>middle</div>
+            <div>middle</div>
+            <div>middle</div>
+            <div>middle</div>
+        </div>
+        <div class="left">
+            <div>left</div>
+            <div>left</div>
+            <div>left</div>
+        </div>
+        <div class="right">
+            <div>right</div>
+            <div>right</div>
+            <div>right</div>
+            <div>right</div>
+            <div>right</div>
+        </div>
+    </div>
+    <div class="footer">#footer</div>
+</div>
+
+<h3>双飞翼</h3>
+<div class="double-wings">
+    <div class="header">#header</div>
+    <div class="container">
+        <div class="middle">
+            <div>middle</div>
+            <div>middle</div>
+            <div>middle</div>
+            <div>middle</div>
+        </div>
+    </div>
+    <div class="left">
+        <div>left</div>
+        <div>left</div>
+        <div>left</div>
+    </div>
+    <div class="right">
+        <div>right</div>
+        <div>right</div>
+        <div>right</div>
+        <div>right</div>
+        <div>right</div>
+        <div>right</div>
+    </div>
+    <div class="footer">#footer</div>
+</div>
+
+<h3>flex 圣杯</h3>
+<div class="holy-grail-flex">
+    <div class="header">#header</div>
+    <div class="container">
+        <div class="middle">
+            <div>middle</div>
+            <div>middle</div>
+            <div>middle</div>
+            <div>middle</div>
+        </div>
+        <div class="left">
+            <div>left</div>
+            <div>left</div>
+            <div>left</div>
+        </div>
+        <div class="right">
+            <div>right</div>
+            <div>right</div>
+            <div>right</div>
+            <div>right</div>
+            <div>right</div>
+            <div>right</div>
+        </div>
+    </div>
+    <div class="footer">#footer</div>
+</div>
+</body>
+</html>
