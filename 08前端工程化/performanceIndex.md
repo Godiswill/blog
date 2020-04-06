@@ -8,15 +8,17 @@
 | -- | --- | ---- | -- |
 | unload | 前一个页面卸载耗时 | unloadEventEnd - unloadEventStart | 前一个页面卸载时可能监听了 unload 做些数据收集，会影响页面跳转 |
 | redirect | 重定向耗时 | redirectEnd - redirectStart | 过多重定向影响性能 |
+| appCache | 缓存耗时 | domainLookupStart - fetchStart |  |
 | dns | DNS 解析耗时 | domainLookupEnd - domainLookupStart |  |
 | tcp | TCP 连接耗时 | connectEnd - connectStart |  |
 | ssl | SSL 安全连接耗时 | connectEnd - secureConnectionStart | 只在 HTTPS 下有效 |
 | ttfb | Time to First Byte（TTFB），网络请求耗时 | responseStart - requestStart |  |
-| trans | 数据传输耗时 | responseEnd - responseStart |  |
+| response | 数据传输耗时 | responseEnd - responseStart |  |
 | dom | 可交互 DOM 解析耗时 | domInteractive - responseEnd | [Interactive content](https://html.spec.whatwg.org/multipage/dom.html#interactive-content) |
 | dom2 | 剩余 DOM 解析耗时 | domContentLoadedEventStart - domInteractive |  DOMContentLoaded 所有DOM元素都加载完毕(除了 async script) |
-| domcb | DOMContentLoaded 执行时间 | domContentLoadedEventEnd - domContentLoadedEventStart | document.addEventListener('DOMContentLoaded', cb) |
+| DCL | DOMContentLoaded 事件耗时 | domContentLoadedEventEnd - domContentLoadedEventStart | document.addEventListener('DOMContentLoaded', cb) |
 | resources | 资源加载耗时 | loadEventStart - domContentLoadedEventEnd | 完整DOM(DOMContentLoaded)到资源加载完毕(window.onLoad)时间 |
+| onLoad | onLoad事件耗时 | loadEventEnd - loadEventStart |  |
 
 ### 关键性能指标
 | 字段 | 描述 | 计算方式 | 备注 |
@@ -24,7 +26,7 @@
 | firstbyte | 首包时间 | responseStart - domainLookupStart |  |
 | fpt | First Paint Time, 首次渲染时间 / 白屏时间 | responseEnd - fetchStart | 从请求开始到浏览器开始解析第一批 HTML 文档字节的时间差 |
 | tti | Time to Interact，首次可交互时间 | domInteractive - fetchStart | 浏览器完成所有 HTML 解析并且完成 DOM 构建，此时浏览器开始加载资源 |
-| ready | HTML 加载完成时间， 即 DOM Ready 时间 | domContentLoadEventEnd - fetchStart | 如果页面有同步执行的 JS，则同步 JS 执行时间 = ready - tti |
+| ready | HTML 加载完成时间， 即 DOM Ready 时间 | domContentLoadedEventEnd - fetchStart | 如果页面有同步执行的 JS，则同步 JS 执行时间 = ready - tti |
 | load | 页面完全加载时间 | loadEventStart - fetchStart | load = 首次渲染时间 + DOM 解析耗时 + 同步 JS 执行 + 资源加载耗时 |
 
 ### 小程序
@@ -91,7 +93,7 @@ chrome 很老的版本有一个 bug，当获取资源复用了已建立的 HTTPS
 取值时应该避免不支持和未使用的情况
 
 ```javascript
-const r0 = performance.getEntriesByType("resource")[0];
+const r0 = performance.getEntriesByType('resource')[0];
 if ( r0.secureConnectionStart ) {
   const ssl = r0.connectEnd - r0.secureConnectionStart;
 }
@@ -121,7 +123,7 @@ responseStart
 
 ```javascript
 // Resource Timing
-const r0 = performance.getEntriesByType("resource")[0],
+const r0 = performance.getEntriesByType('resource')[0],
   loadtime = r0.duration;
 
 // 只要选取上述一个属性(除了secureConnectionStart)进行判断即可
@@ -235,7 +237,7 @@ if (pageNav.workerStart > 0) {
 // HTTP header 大小
 const headerSize = pageNav.transferSize - pageNav.encodedBodySize;
 
-// 压缩比率
+// 压缩比率，如果是 1 的话，也能说明未开启例如 gzip
 const compressionRatio = pageNav.decodedBodySize / pageNav.encodedBodySize;
 ```
 - 兼容，由于 `performance.getEntriesByType('navigation')` 取不到并不会报错而是返回空数组。
@@ -255,7 +257,7 @@ Paint Timing 定义两个新指标：
 
 ```javascript
 // 直接在代码里这么用的话，不一定取得到，需要轮询
-performance.getEntriesByType("paint");
+performance.getEntriesByType('paint');
 ```
 ```json
 [
@@ -341,21 +343,20 @@ measures.forEach(measureItem => {
   console.log(`${measureItem.name}: ${measureItem.duration}`);
 });
 ```
-
 ## 上报数据
 
 - 一般可以考虑在用户准备卸载页面时上报，毫无疑问这个时间点不会干扰用户在当前页的操作。
 但是如果上报耗时很长，会影响用户跳转到下一页的体验。可以使用 `navigator.sendBeacon`。
 
 ```javascript
-window.addEventListener("unload", function() {
+window.addEventListener('unload', function() {
   // 注意 performance.getEntries 会取当前页所有资源包括页面本身的性能信息
   // 注意 数据体量问题
   let rumData = new FormData();
-  rumData.append("entries", JSON.stringify(performance.getEntries()));
+  rumData.append('entries', JSON.stringify(performance.getEntries()));
 
   // 是否支持
-  if("sendBeacon" in navigator) {
+  if('sendBeacon' in navigator) {
     // Beacon 发起请求
     if(navigator.sendBeacon(endpoint, rumData)) {
       // sendBeacon 发送成功
@@ -382,7 +383,7 @@ window.addEventListener("unload", function() {
 - `Navigation Timing` 收集 HTML 文档性能指标。
 1. `performance.timing` 常用、解决兼容性
 1. `performance.getEntriesByType('navigation')[0]` 新标准，精度高内容更详细，兼容性较差
-- `Resource Timing` 收集 HTML 依赖的资源的性能指标，如样CSS、JS、图片、字体等。
+- `Resource Timing` 收集 HTML 依赖的资源的性能指标，如CSS、JS、图片、字体等。
 1. `performance.getEntriesByType('resource')` 新老一样使用，新标准做了扩展。
 -  `User timing` 收集用户自定义
 1. `performance.getEntriesByType('measure')` 可以考虑，用来对 FMP 打点。

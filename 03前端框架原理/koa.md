@@ -182,7 +182,7 @@ callback() {
 - handleRequest，执行中间件，和响应 http 请求。
 ```javascript
 handleRequest(ctx) {
-  fn(ctx);
+  this.fn(ctx);
   ctx.res.end(ctx.body);
 }
 ```
@@ -257,7 +257,7 @@ app.use(ctx => {
 app.listen(3000);
 ```
 
-- node index.js，console 输出
+- node index.js，浏览器输入 `localhost:3000/path?x=1&y=2`，console 输出
 ```
 /path?x=1&y=2
 /path?x=1&y=2
@@ -311,7 +311,7 @@ defineGetter('response', 'body');
 defineSetter('response', 'body');
 ```
 
-- console.log 输出
+- 重启服务，console.log 输出
 ```
 /path?x=1&y=2
 /path?x=1&y=2
@@ -325,7 +325,7 @@ x=1&y=2
 ```
 `ctx.body = 'hello world'` 也不是新添加属性，而是访问 response 上的 body set 方法。
 
-### 第三部，接收多个同步中间件
+### 第三步，接收多个同步中间件
 ```diff
 constructor() {
 -  this.fn = null;
@@ -368,7 +368,7 @@ callback() {
 
 - handleRequest(ctx) {
 + handleRequest(ctx, fnMiddleware) {
-- fn(ctx);
+- this.fn(ctx);
 + fnMiddleware(ctx);
   ctx.res.statusCode = 200;
   ctx.res.end(ctx.body);
@@ -387,7 +387,7 @@ app.use((ctx, next) => {
 });
 ```
 
-### 第三部，异步洋葱圈模型
+### 第四步，异步洋葱圈模型
 
 - 改造 compose，支持异步
 ```diff
