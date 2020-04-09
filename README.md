@@ -96,6 +96,7 @@ html 不缓存 其他静态资源 hash 文件名长缓存。
 ### 性能监控系统
 
 - [性能监控指标](https://github.com/Godiswill/blog/issues/19)
+- [Performance 实操：可视化图表分析 web 性能](https://github.com/Godiswill/blog/issues/24)
 
 ### 前端工程部署
 
