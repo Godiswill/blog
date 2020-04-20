@@ -1,6 +1,6 @@
 # 错误监控
 
-### 前言
+## 前言
 
 作为一个前端，在开发过程即便十分小心，自测充分，在不同用户复杂的操作下也难免会出现程序员意想不到的问题，给公司或个人带来巨大的损失。
 这时一款能够及时上报错误和能够帮助程序员很好的解决错误的前端错误监控系统就必不可少了。
@@ -19,7 +19,7 @@
 5. 如何更好统计问题的分布(机型设备、浏览器、地理位置、带宽等)，自主根据数据来取舍兼容倾向性？
 6. ...
 
-### 常见错误
+## 常见错误
 
 1. 脚本错误
 	- 语法错误
@@ -31,7 +31,9 @@
 	- 资源加载错误
 	- 自定义请求错误
 
-#### 语法错误
+可以阅读监控类库源码 [errorWatch](https://github.com/Godiswill/errorWatch) 来加深理解，也可以直接用于项目。
+
+### 语法错误
 
 例如，英文字符写成中文字符。一般容易在开发时被发现。
 
@@ -47,7 +49,7 @@ try {
 }
 ```
 
-#### 同步错误
+### 同步错误
 
 JS引擎在执行脚本时，把任务分块压入事件栈，轮询取出执行，每个事件任务都有自己的上下文环境，
 在当前上下文环境同步执行的代码发生错误都能被`try` `catch` 捕获，保证后续的同步代码被执行。
@@ -60,7 +62,7 @@ try {
 }
 ```
 
-#### 异步错误
+### 异步错误
 常见的 `setTimeout` 等方法会创建新的事件任务插入事件栈中，待后续执行。
 所以`try` `catch` 无法捕获其他上下文的代码错误。
 
@@ -92,14 +94,14 @@ try {
 
 ![windowOnerror](https://raw.githubusercontent.com/Godiswill/blog/master/错误监控/windowOnerror.jpg)
 
-#### window.onerror 注意事项
+- window.onerror 注意事项
 
 1. `window.onerror` 可以捕获常见语法、同步、异步错误等错误；
 1. `window.onerror` 无法捕获 `Promise` 错误、网络错误；
 1. `window.onerror` 应该在所有JS脚本之前被执行，以免遗漏；
 1. `window.onerror` 容易被覆盖，在处理回调时应该考虑，被人也在使用该事件监听。
 
-#### 网络错误
+### 网络错误
 
 由于网络请求异常不会冒泡，应此需要在事件捕获阶段才能获取到。
 我们可以利用 `window.addEventListener`。比如代码、图片等重要 `CDN` 资源挂了，能及时获得反馈是极为重要的。
@@ -127,14 +129,14 @@ window.addEventListener('error', (e) => {
 }, true);
 ```
 
-#### `window.onerror` 与 `window.addEventListener`
+- `window.onerror` 与 `window.addEventListener`
 
 `window.addEventListener` 的好处，不怕回调被覆盖，可以监听多个回调函数，但记得销毁避免内存泄漏与错误。
 但无法获取 `window.onerror` 那么丰富的信息。一般只用`window.addEventListener` 来监控资源加载错误。
 
 - 对于网络请求自定义错误，最好是手动上报。
 
-#### Promise 错误
+### Promise 错误
 
 如果你在使用 `promise` 时未 `catch` 的话，那么 `onerror` 也无能为力了。
 
@@ -155,7 +157,7 @@ new Promise((resolve) => {
 
 具体兼容处理在 TraceKit.js 可以看到。
 
-#### 上报方式
+## 上报方式
 1. `img` 上报
 1. `ajax` 上报
 
@@ -169,8 +171,8 @@ function report(errInfo) {
 
 - 注意：`img` 请求有长度限制，数据太大最好还是用 `ajax.post`。
 
-
-#### Script error
+## 补充
+### Script error
 
 引用不同域名的脚本，如果没有特殊处理，报错误了，一般浏览器处于安全考虑，不显示具体错误而是 `Script error`.
 例如他人别有用心引用你的线上非开源业务代码，你的脚本报错信息当然不想让他知道了。
@@ -193,7 +195,7 @@ function report(errInfo) {
 
 讲了这么多，还有一个非常重要的主题，如何分析我能捕获的错误信息？
 
-#### JavaScript 错误剖析
+### JavaScript 错误剖析
 
 一个 `JavaScript` 错误通常由一下错误组成
 
@@ -219,7 +221,7 @@ function report(errInfo) {
 例如 `window.onerror` 第五个参数 error 对象是2013年加入到 `WHATWG` 规范中的。
 早期Safari 和 IE10还没有，Firefox是从14版本加入Error对象的，chrome 也是 2013 年才新加的。
 
-#### 推荐做法
+### 推荐做法
 
 1. `window.onerror`是捕获JS 错误最好的方法，当有一个合法的Error对象和追溯栈时才上报。
 也可以避免一些无法干扰的错误，例如插件错误和跨域等一些信息不全的错误。
@@ -237,7 +239,7 @@ function report(errInfo) {
 
 具体是否需要做到如此细粒度的包裹，还是视情况而定。
 
-#### SourceMap
+### SourceMap
 
 例如有以下错误追溯栈(stack trace)
 
@@ -329,9 +331,7 @@ export const sourceMapDeal = async (rawSourceMap, line, column, offset) => {
 
 大家根据 `SourceMap` 文件的格式，就能很好的理解这段代码了。
 
-目前监控系统正在一点点开发当中，做的好用的话，会开源出来。。。
-
-### 参考网站
+## 参考网站
 1. [mozilla/source-map](https://github.com/mozilla/source-map)
 1. [前端代码异常监控实战](https://github.com/happylindz/blog/issues/5)
 1. [前端异常监控 - BadJS](https://slides.com/loskael/badjs/fullscreen#/)
