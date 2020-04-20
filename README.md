@@ -8,6 +8,7 @@
 - [JS基础手写代码](https://github.com/Godiswill/blog/issues/20)
 - [《ECMAScript 6 入门教程》](https://es6.ruanyifeng.com/)
 - [你真的懂事件循环吗](https://github.com/Godiswill/blog/issues/17)
+- [web生命周期](https://github.com/Godiswill/blog/issues/25)
 
 ## 02. CSS 基础
 
@@ -96,7 +97,7 @@ html 不缓存 其他静态资源 hash 文件名长缓存。
 ### 性能监控系统
 
 - [性能监控指标](https://github.com/Godiswill/blog/issues/19)
-- [Performance 实操：可视化图表分析 web 性能](https://github.com/Godiswill/blog/issues/24)
+- [可视化性能分析](https://github.com/Godiswill/blog/issues/24)
 
 ### 前端工程部署
 

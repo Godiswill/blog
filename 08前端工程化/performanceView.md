@@ -1,4 +1,4 @@
-# Performance 实操：可视化图表分析 web 性能
+# 可视化性能分析
 [原文链接](https://github.com/Godiswill/blog/issues/24)
 
 ## 简介
