@@ -217,8 +217,8 @@ for(let i = 0; i < 100; i++) {
   span.textContent = 'hello';
 }
 ```
-理想 for 循环完毕后，`DOMNodeInserted` 回调执行一次。
-结果：执行了 `200` 次。添加 `span` 触发 `100` 次，设置 `textContent` 触发 `100`。
+理想 for 循环完毕后，`DOMNodeInserted` 回调执行一次(回调中能够取到 `200` 次 `DOM` 变动信息)。
+结果：`DOMNodeInserted` 回调同步穿插在 `for` 中执行了 `200` 次。添加 `span` 触发 `100` 次，设置 `textContent` 触发 `100`。
 这就让使用 `DOMNodeInserted` 会产生极差的性能负担。
 为了解决此等问题，创建了一个新的任务队列叫做微任务 `Microtasks`。
 
@@ -248,8 +248,8 @@ loop();
 2. rAF queue
 3. microtask queue
 
-- task queue 前面已知，事件轮询中取出一个 `task` 执行，如果产生`new task` 入队列。`task` 执行完毕等待下一次轮询取出`next task`。
-- microtask queue task 执行完毕后，执行队列中所有 `microtask`，如果产生`new microtask`，入队列，等待执行，直到队列清空。
+- `task queue`。前面已知，事件轮询中取出 `一个 task` 执行，如果产生`new task` 入队列。`task` 执行完毕等待下一次轮询取出`next task`。
+- `microtask queue`。上面的 `task` 执行完毕后，执行该队列中 `所有 microtask`，如果产生`new microtask`，入队列，等待执行，直到队列清空。
 
 ```diff
 while(true) {
@@ -265,7 +265,7 @@ while(true) {
 }
 ```
 
-- `rAF queue` 每一帧渲染管道流开始之前一次性执行完所有队列中的 `rAF callback`，如果产生`new rAF` 等待下一帧执行。
+- `rAF queue`。每一帧渲染管道流开始之前一次性执行完所有队列中的 `rAF callback`，如果产生`new rAF` 等待下一帧执行。
 
 ```diff
 while(true) {

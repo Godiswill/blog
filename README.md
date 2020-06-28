@@ -62,7 +62,7 @@
 
 ### 公共模板及文档建设
 
-- vue-cli、create-react-app的原理和实现
+- create-react-app 的原理和实现
 - node 命令行 commander、inquirer、chalk
 - doc 生成工具
 - 区块概念
@@ -101,11 +101,8 @@ html 不缓存 其他静态资源 hash 文件名长缓存。
 
 ### 前端工程部署
 
-- pm2
-- docker + ftp
-- docker hub
-- docker compose + git
-- k8s
+- [玩转 docker](https://github.com/Godiswill/blog/issues/26)
+- docker、k8s、pm2
 
 ### 前端微服务
 

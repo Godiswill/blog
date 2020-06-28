@@ -66,7 +66,7 @@
   // reset rem unit on page resize
   window.addEventListener('resize', setRemUnit)
   window.addEventListener('pageshow', function (e) {
-    if (e.persisted) {
+    if (e.persisted) { // 表示从缓存中取出
       setRemUnit()
     }
   })

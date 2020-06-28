@@ -368,13 +368,13 @@ function removeUnsavedChanges(id) {
 1. 避免在 `load`、`DOMContentLoaded`、`beforeunload`、`unload` 中处理上报采集数据。
 1. 监听 `visibilitychange` 在各种切换APP、息屏时处理采集信息。
 1. 监听 `pagehide` 收集页面刷新导航跳转场景。
-1. 仅仅使用 `beforeunload` 兼容 `Safari` 关闭 Tab 和IE10以下版本的场景。
+1. 仅仅使用 `beforeunload` 兼容 `Safari` 关闭 Tab 和IE11以下版本的场景。
 1. 注意一旦收集信息立即销毁所有采集事件，避免重复上报。
 
 ```javascript
 function clear(fn) {
   ['visibilitychange', 'pagehide', 'beforeunload']
-    .forEach(event => window.removeEventListener(event, fn));
+    .forEach(event => window.removeEventListener(event, fn, true));
 }
 
 function collect() {
@@ -393,13 +393,13 @@ function collect() {
 }
 
 const isSafari = typeof safari === 'object' && safari.pushNotification;
-const isIE9 = 'onpagehide' in window;
+const isIE10 = !('onpagehide' in window);
 
-window.addEventListener(`visibilitychange`, collect, true);
-!isIE9 && window.addEventListener(`pagehide`, collect, true);
+window.addEventListener('visibilitychange', collect, true);
+!isIE10 && window.addEventListener('pagehide', collect, true);
 
-if(isSafari || isIE9) {
-  window.addEventListener(`beforeunload`, collect, true);
+if(isSafari || isIE10) {
+  window.addEventListener('beforeunload', collect, true);
 }
 ```
 
