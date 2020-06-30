@@ -1,5 +1,7 @@
 # 【大前端】分享记录，先列个大纲之后慢慢补坑
 
+![思维导图](https://raw.githubusercontent.com/Godiswill/blog/master/fed.png)
+
 ## 01. JS 基础
 
 - [JS面向对象](https://github.com/Godiswill/blog/issues/8)（封装、继承、多态）
