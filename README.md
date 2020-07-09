@@ -24,7 +24,6 @@
 - [源码分析：react hook 最佳实践](https://github.com/Godiswill/blog/issues/18)
 - [redux 源码分析](https://github.com/Godiswill/blog/issues/23)
 - react-redux、redux-soga 源码分析
-- Vue 双向绑定原理
 - React diff算法思路
 - mobx、redux 状态管理实现思路
 - React fiber 原理
