@@ -1,5 +1,6 @@
 # 热更新：Chrome 插件开发提效
 [原文](https://github.com/Godiswill/blog/issues/32)
+
 Chrome Manifest V3 + Webpack5 + React18 热更新提升开发效率。
 
 ## 解决的问题
@@ -10,7 +11,7 @@ Chrome Manifest V3 + Webpack5 + React18 热更新提升开发效率。
    
 特别的繁琐，严重影响开发效率。
 
-![reload](https://raw.githubusercontent.com/Godiswill/blog/08%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/chrome-extension/01.png)
+![reload](https://raw.githubusercontent.com/Godiswill/blog/master/08%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/chrome-extension/01.png)
 
 本文借助 create-react-app reject 后的工程，改造实现：
 1. 支持现代 Web 开发一样的体验，React、TS、热更新（react-refresh）等
@@ -446,7 +447,8 @@ main();
 + "build": "node scripts/build.js && node scripts/zip.js",
 ```
  ## 最终效果
-![reload](https://raw.githubusercontent.com/Godiswill/blog/08%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/chrome-extension/02.png)
+
+![overview](https://raw.githubusercontent.com/Godiswill/blog/master/08%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/chrome-extension/02.png)
 
 太懒了，这里就不搞动态图了，各位看官老爷自行获取代码运行查看效果。
 
